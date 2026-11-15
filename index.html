@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumina Gallery — Curated Visual Experience</title>
+  <meta name="description" content="A responsive, interactive image gallery featuring smooth transitions, lightbox view, category filtering, search, and dynamic effects.">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow glow-top" aria-hidden="true"></div>
+  <div class="ambient-glow glow-bottom" aria-hidden="true"></div>
+
+  <!-- Page Header -->
+  <header class="gallery-header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-badge">
+          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>Lumina <span>Gallery</span></h1>
+          <p class="tagline">Explore curated visual stories from around the world</p>
+        </div>
+      </div>
+
+      <!-- Quick Search Bar -->
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search by title, location, or tag..." 
+          aria-label="Search images"
+          autocomplete="off"
+        >
+        <button id="clearSearchBtn" class="clear-btn" aria-label="Clear search" title="Clear search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Gallery Controls & Filter Bar -->
+  <section class="gallery-controls-section">
+    <div class="controls-container">
+      <!-- Category Filter Pills -->
+      <div class="category-nav" role="tablist" aria-label="Filter gallery by category">
+        <button class="filter-chip active" data-category="all" role="tab" aria-selected="true">
+          <span class="chip-icon">✨</span>
+          <span class="chip-label">All</span>
+          <span class="chip-count" id="count-all">16</span>
+        </button>
+        <button class="filter-chip" data-category="nature" role="tab" aria-selected="false">
+          <span class="chip-icon">🌿</span>
+          <span class="chip-label">Nature</span>
+          <span class="chip-count" id="count-nature">4</span>
+        </button>
+        <button class="filter-chip" data-category="architecture" role="tab" aria-selected="false">
+          <span class="chip-icon">🏛️</span>
+          <span class="chip-label">Architecture</span>
+          <span class="chip-count" id="count-architecture">4</span>
+        </button>
+        <button class="filter-chip" data-category="animals" role="tab" aria-selected="false">
+          <span class="chip-icon">🦊</span>
+          <span class="chip-label">Animals</span>
+          <span class="chip-count" id="count-animals">4</span>
+        </button>
+        <button class="filter-chip" data-category="travel" role="tab" aria-selected="false">
+          <span class="chip-icon">✈️</span>
+          <span class="chip-label">Travel</span>
+          <span class="chip-count" id="count-travel">4</span>
+        </button>
+      </div>
+
+      <!-- Bonus: Visual Filter Effects Selector & Results Summary -->
+      <div class="toolbar-right">
+        <div class="visual-filter-group">
+          <label for="visualFilterSelect" class="filter-select-label">
+            <svg class="select-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
+            </svg>
+            <span>Tone:</span>
+          </label>
+          <select id="visualFilterSelect" aria-label="Visual filter tone">
+            <option value="normal">Normal</option>
+            <option value="vibrant">Vibrant Pop</option>
+            <option value="bw">B&amp;W Noir</option>
+            <option value="warm">Warm Sunset</option>
+            <option value="sepia">Vintage Sepia</option>
+            <option value="cyber">Cyberpunk Blue</option>
+          </select>
+        </div>
+
+        <div class="results-badge" id="resultsBadge">
+          Showing 16 photos
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Gallery Container -->
+  <main class="gallery-wrapper">
+    <!-- Gallery Grid -->
+    <section class="gallery-grid" id="galleryGrid" aria-live="polite">
+      <!-- Image cards populated dynamically via index.js -->
+    </section>
+
+    <!-- Empty State (Shown when search/filter has 0 matches) -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          <line x1="8" y1="11" x2="14" y2="11"></line>
+        </svg>
+      </div>
+      <h3>No matching images found</h3>
+      <p>We couldn't find any photos matching your current search or category filter.</p>
+      <button class="reset-filter-btn" id="resetFiltersBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        Reset Filters
+      </button>
+    </div>
+  </main>
+
+  <!-- Lightbox Modal View -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true" style="display: none;">
+    <!-- Backdrop Overlay -->
+    <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+
+    <!-- Lightbox Main Stage -->
+    <div class="lightbox-container" id="lightboxContainer">
+      <!-- Lightbox Header -->
+      <div class="lightbox-header">
+        <div class="lightbox-meta-header">
+          <span class="lightbox-category-badge" id="lightboxCategory">Nature</span>
+          <h2 class="lightbox-title" id="lightboxTitle">Image Title</h2>
+        </div>
+
+        <div class="lightbox-controls">
+          <span class="lightbox-counter" id="lightboxCounter">1 / 16</span>
+          
+          <button class="control-btn" id="lightboxFullscreenBtn" title="Toggle Fullscreen (F)" aria-label="Toggle Fullscreen">
+            <svg class="fullscreen-open-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+            <svg class="fullscreen-exit-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: none;">
+              <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+            </svg>
+          </button>
+
+          <a class="control-btn" id="lightboxDownloadBtn" href="#" target="_blank" rel="noopener noreferrer" title="View Full Resolution" aria-label="Open Full Resolution">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </a>
+
+          <button class="control-btn close-btn" id="lightboxCloseBtn" title="Close Lightbox (Esc)" aria-label="Close Lightbox">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Lightbox Image Viewport & Navigation -->
+      <div class="lightbox-stage">
+        <!-- Prev Button -->
+        <button class="nav-btn prev-btn" id="prevBtn" title="Previous Image (Left Arrow)" aria-label="Previous Image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        <!-- Image Wrapper with Loading Spinner -->
+        <div class="lightbox-image-wrapper" id="imageWrapper">
+          <div class="lightbox-loader" id="lightboxLoader">
+            <div class="spinner"></div>
+          </div>
+          <img 
+            id="lightboxImage" 
+            src="" 
+            alt="Expanded view" 
+            class="lightbox-img"
+          >
+        </div>
+
+        <!-- Next Button -->
+        <button class="nav-btn next-btn" id="nextBtn" title="Next Image (Right Arrow)" aria-label="Next Image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Lightbox Caption & Details -->
+      <div class="lightbox-footer">
+        <div class="lightbox-caption">
+          <div class="location-tag" id="lightboxLocation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+              <circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span id="lightboxLocationText">Location</span>
+          </div>
+          <p class="lightbox-description" id="lightboxDescription">Description goes here</p>
+        </div>
+
+        <div class="keyboard-hints" aria-hidden="true">
+          <span><kbd>←</kbd> <kbd>→</kbd> Navigate</span>
+          <span><kbd>ESC</kbd> Close</span>
+          <span><kbd>F</kbd> Fullscreen</span>
+        </div>
+      </div>
+
+      <!-- Thumbnail Strip for Quick Navigation -->
+      <div class="thumbnail-strip-container">
+        <div class="thumbnail-strip" id="thumbnailStrip" role="tablist" aria-label="Image Thumbnails">
+          <!-- Thumbnail buttons generated dynamically -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page Footer -->
+  <footer class="gallery-footer">
+    <div class="footer-container">
+      <p class="footer-text">
+        Designed with semantic HTML5, modern CSS Grid/Flexbox layout, and vanilla JavaScript.
+      </p>
+      <div class="footer-tags">
+        <span class="tech-tag">HTML5</span>
+        <span class="tech-tag">CSS3 Grid</span>
+        <span class="tech-tag">Vanilla JS</span>
+        <span class="tech-tag">Lightbox View</span>
+        <span class="tech-tag">Responsive</span>
+        <span class="tech-tag">CSS Filters</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript Logic -->
+  <script src="index.js"></script>
+</body>
+</html>
